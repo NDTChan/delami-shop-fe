@@ -1,0 +1,238 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+model cart {
+  id         BigInt      @id @default(autoincrement())
+  userId     BigInt?
+  sessionId  String      @db.VarChar(100)
+  token      String      @db.VarChar(100)
+  status     Int         @default(0) @db.SmallInt
+  firstName  String?     @db.VarChar(50)
+  middleName String?     @db.VarChar(50)
+  lastName   String?     @db.VarChar(50)
+  mobile     String?     @db.VarChar(15)
+  email      String?     @db.VarChar(50)
+  line1      String?     @db.VarChar(50)
+  line2      String?     @db.VarChar(50)
+  city       String?     @db.VarChar(50)
+  province   String?     @db.VarChar(50)
+  country    String?     @db.VarChar(50)
+  createdAt  DateTime    @db.DateTime(0)
+  updatedAt  DateTime?   @db.DateTime(0)
+  content    String?     @db.Text
+  users      users?      @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_cart_user")
+  cart_item  cart_item[]
+
+  @@index([userId], map: "idx_cart_user")
+}
+
+model cart_item {
+  id        BigInt    @id @default(autoincrement())
+  productId BigInt
+  cartId    BigInt
+  sku       String    @db.VarChar(100)
+  price     Float     @default(0) @db.Float
+  discount  Float     @default(0) @db.Float
+  quantity  Int       @default(0) @db.SmallInt
+  active    Boolean   @default(false)
+  createdAt DateTime  @db.DateTime(0)
+  updatedAt DateTime? @db.DateTime(0)
+  content   String?   @db.Text
+  cart      cart      @relation(fields: [cartId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_cart_item_cart")
+  product   product   @relation(fields: [productId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_cart_item_product")
+
+  @@index([cartId], map: "idx_cart_item_cart")
+  @@index([productId], map: "idx_cart_item_product")
+}
+
+model category {
+  id               BigInt             @id @default(autoincrement())
+  parentId         BigInt?
+  title            String             @db.VarChar(75)
+  metaTitle        String?            @db.VarChar(100)
+  slug             String             @db.VarChar(100)
+  content          String?            @db.Text
+  category         category?          @relation("categoryTocategory", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_category_parent")
+  other_category   category[]         @relation("categoryTocategory")
+  product_category product_category[]
+
+  @@index([parentId], map: "idx_category_parent")
+}
+
+model order {
+  id           BigInt        @id @default(autoincrement())
+  userId       BigInt?
+  sessionId    String        @db.VarChar(100)
+  token        String        @db.VarChar(100)
+  status       Int           @default(0) @db.SmallInt
+  subTotal     Float         @default(0) @db.Float
+  itemDiscount Float         @default(0) @db.Float
+  tax          Float         @default(0) @db.Float
+  shipping     Float         @default(0) @db.Float
+  total        Float         @default(0) @db.Float
+  promo        String?       @db.VarChar(50)
+  discount     Float         @default(0) @db.Float
+  grandTotal   Float         @default(0) @db.Float
+  firstName    String?       @db.VarChar(50)
+  middleName   String?       @db.VarChar(50)
+  lastName     String?       @db.VarChar(50)
+  mobile       String?       @db.VarChar(15)
+  email        String?       @db.VarChar(50)
+  line1        String?       @db.VarChar(50)
+  line2        String?       @db.VarChar(50)
+  city         String?       @db.VarChar(50)
+  province     String?       @db.VarChar(50)
+  country      String?       @db.VarChar(50)
+  createdAt    DateTime      @db.DateTime(0)
+  updatedAt    DateTime?     @db.DateTime(0)
+  content      String?       @db.Text
+  users        users?        @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_order_user")
+  order_item   order_item[]
+  transaction  transaction[]
+
+  @@index([userId], map: "idx_order_user")
+}
+
+model order_item {
+  id        BigInt    @id @default(autoincrement())
+  productId BigInt
+  orderId   BigInt
+  sku       String    @db.VarChar(100)
+  price     Float     @default(0) @db.Float
+  discount  Float     @default(0) @db.Float
+  quantity  Int       @default(0) @db.SmallInt
+  createdAt DateTime  @db.DateTime(0)
+  updatedAt DateTime? @db.DateTime(0)
+  content   String?   @db.Text
+  order     order     @relation(fields: [orderId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_order_item_order")
+  product   product   @relation(fields: [productId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_order_item_product")
+
+  @@index([orderId], map: "idx_order_item_order")
+  @@index([productId], map: "idx_order_item_product")
+}
+
+model product {
+  id               BigInt             @id @default(autoincrement())
+  userId           BigInt
+  title            String             @db.VarChar(75)
+  metaTitle        String?            @db.VarChar(100)
+  slug             String             @unique(map: "uq_slug") @db.VarChar(100)
+  summary          String?            @db.TinyText
+  type             Int                @default(0) @db.SmallInt
+  sku              String             @db.VarChar(100)
+  price            Float              @default(0) @db.Float
+  discount         Float              @default(0) @db.Float
+  quantity         Int                @default(0) @db.SmallInt
+  shop             Boolean            @default(false)
+  createdAt        DateTime           @db.DateTime(0)
+  updatedAt        DateTime?          @db.DateTime(0)
+  publishedAt      DateTime?          @db.DateTime(0)
+  startsAt         DateTime?          @db.DateTime(0)
+  endsAt           DateTime?          @db.DateTime(0)
+  content          String?            @db.Text
+  cart_item        cart_item[]
+  order_item       order_item[]
+  users            users              @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_product_user")
+  product_category product_category[]
+  product_meta     product_meta[]
+  product_review   product_review[]
+
+  @@index([userId], map: "idx_product_user")
+}
+
+model product_category {
+  productId  BigInt
+  categoryId BigInt
+  category   category @relation(fields: [categoryId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_pc_category")
+  product    product  @relation(fields: [productId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_pc_product")
+
+  @@id([productId, categoryId])
+  @@index([categoryId], map: "idx_pc_category")
+  @@index([productId], map: "idx_pc_product")
+}
+
+model product_meta {
+  id        BigInt  @id @default(autoincrement())
+  productId BigInt
+  key       String  @db.VarChar(50)
+  content   String? @db.Text
+  product   product @relation(fields: [productId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_meta_product")
+
+  @@unique([productId, key], map: "uq_product_meta")
+  @@index([productId], map: "idx_meta_product")
+}
+
+model product_review {
+  id                   BigInt           @id @default(autoincrement())
+  productId            BigInt
+  parentId             BigInt?
+  title                String           @db.VarChar(100)
+  rating               Int              @default(0) @db.SmallInt
+  published            Boolean          @default(false)
+  createdAt            DateTime         @db.DateTime(0)
+  publishedAt          DateTime?        @db.DateTime(0)
+  content              String?          @db.Text
+  product_review       product_review?  @relation("product_reviewToproduct_review", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_review_parent")
+  other_product_review product_review[] @relation("product_reviewToproduct_review")
+  product              product          @relation(fields: [productId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_review_product")
+
+  @@index([parentId], map: "idx_review_parent")
+  @@index([productId], map: "idx_review_product")
+}
+
+model roles {
+  id         Int          @id @default(autoincrement())
+  name       String?      @db.VarChar(255)
+  user_roles user_roles[]
+}
+
+model transaction {
+  id        BigInt    @id @default(autoincrement())
+  userId    BigInt
+  orderId   BigInt
+  code      String    @db.VarChar(100)
+  type      Int       @default(0) @db.SmallInt
+  mode      Int       @default(0) @db.SmallInt
+  status    Int       @default(0) @db.SmallInt
+  createdAt DateTime  @db.DateTime(0)
+  updatedAt DateTime? @db.DateTime(0)
+  content   String?   @db.Text
+  order     order     @relation(fields: [orderId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_transaction_order")
+  users     users     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_transaction_user")
+
+  @@index([orderId], map: "idx_transaction_order")
+  @@index([userId], map: "idx_transaction_user")
+}
+
+model user_roles {
+  user_id BigInt
+  role_id Int
+  roles   roles  @relation(fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_ROLE_ID")
+  users   users  @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_USER_ID")
+
+  @@id([user_id, role_id])
+  @@index([role_id], map: "FK_ROLE_ID")
+}
+
+model users {
+  id          BigInt        @id @default(autoincrement())
+  email       String?       @unique(map: "uq_email") @db.VarChar(255)
+  first_name  String?       @db.VarChar(255)
+  last_name   String?       @db.VarChar(255)
+  password    String?       @db.VarChar(255)
+  username    String?       @db.VarChar(255)
+  is_enabled  Boolean       @default(dbgenerated("b'1'")) @db.Bit(1)
+  mobile      String?       @unique(map: "uq_mobile") @db.VarChar(15)
+  cart        cart[]
+  order       order[]
+  product     product[]
+  transaction transaction[]
+  user_roles  user_roles[]
+}
