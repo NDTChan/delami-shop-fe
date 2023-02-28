@@ -10,12 +10,6 @@ import {
   TextInput,
   Title,
 } from "@mantine/core";
-import { LoaderFunction } from "@remix-run/node";
-
-// export let loader: LoaderFunction = async ({ request }) => {
-
-//   return request;
-// };
 
 export default function Login() {
   return (

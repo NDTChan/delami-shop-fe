@@ -6,6 +6,7 @@ import {
   MantineProvider,
   useMantineTheme,
 } from "@mantine/core";
+
 import { StylesPlaceholder } from "@mantine/remix";
 import { json, MetaFunction } from "@remix-run/node";
 import {
@@ -21,6 +22,11 @@ import { useState } from "react";
 import { SpotlightAction, SpotlightProvider } from "@mantine/spotlight";
 import { SpotlightProductAction } from "./components/common/spotlight-product-action";
 import { HeaderAction } from "./components/header/header";
+import type { LoaderArgs } from "@remix-run/node";
+import {
+  createColorSchemeSession,
+  getColorSchemeValue,
+} from "./utils/session.server";
 
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
@@ -35,7 +41,6 @@ export enum Theme {
 
 createEmotionCache({ key: "mantine" });
 
-import type { LoaderArgs } from "@remix-run/node";
 type LoaderData = {
   actions: SpotlightAction[];
   links: {
@@ -44,8 +49,9 @@ type LoaderData = {
     links?: { link: string; label: string }[];
   }[];
   user: { name: string; image: string };
+  colorScheme?: string;
 };
-export async function loader(args: LoaderArgs) {
+export async function loader({ request }: LoaderArgs) {
   const actions = [
     {
       image: "https://img.icons8.com/clouds/256/000000/futurama-bender.png",
@@ -138,18 +144,26 @@ export async function loader(args: LoaderArgs) {
     image:
       "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=255&q=80",
   };
-  let data: LoaderData = { actions, links, user };
+
+  const colorScheme = await getColorSchemeValue(request);
+  let data: LoaderData = { actions, links, user, colorScheme };
   return json(data);
 }
 
 export default function App() {
-  const [colorScheme, setColorScheme] = useState<ColorScheme>(Theme.LIGHT);
-  const toggleColorScheme = (value?: ColorScheme) =>
-    setColorScheme(
-      value || (colorScheme === Theme.DARK ? Theme.LIGHT : Theme.DARK)
-    );
-  const theme = useMantineTheme();
   const data = useLoaderData<typeof loader>() as LoaderData;
+  const [colorScheme, setColorScheme] = useState<ColorScheme>(
+    data.colorScheme !== undefined && data.colorScheme === Theme.DARK? Theme.DARK: Theme.LIGHT
+  );
+  const toggleColorScheme = (value?: ColorScheme) => {
+    const matineColorScheme =
+      value || (colorScheme === Theme.DARK ? Theme.LIGHT : Theme.DARK);
+    setColorScheme(matineColorScheme);
+    console.log("remixColorScheme", matineColorScheme);
+
+    createColorSchemeSession(matineColorScheme);
+  };
+
   return (
     <ColorSchemeProvider
       colorScheme={colorScheme}
@@ -176,14 +190,14 @@ export default function App() {
             <body>
               <AppShell
                 layout="alt"
-                styles={{
+                styles={(theme) => ({
                   main: {
                     background:
-                      theme.colorScheme === "dark"
+                      colorScheme === "dark"
                         ? theme.colors.dark[8]
                         : theme.colors.gray[0],
                   },
-                }}
+                })}
                 header={<HeaderAction links={data.links} user={data.user} />}
               >
                 <Outlet />
