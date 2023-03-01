@@ -3,8 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
   relationMode = "prisma"
 }
 
@@ -219,6 +219,7 @@ model user_roles {
 
   @@id([user_id, role_id])
   @@index([role_id], map: "FK_ROLE_ID")
+  @@index([user_id])
 }
 
 model users {
@@ -226,7 +227,7 @@ model users {
   email       String?       @unique(map: "uq_email") @db.VarChar(255)
   first_name  String?       @db.VarChar(255)
   last_name   String?       @db.VarChar(255)
-  password    String?       @db.VarChar(255)
+  password    String        @db.VarChar(255)
   username    String?       @db.VarChar(255)
   is_enabled  Boolean       @default(dbgenerated("b'1'")) @db.Bit(1)
   mobile      String?       @unique(map: "uq_mobile") @db.VarChar(15)

@@ -23,10 +23,6 @@ import { SpotlightAction, SpotlightProvider } from "@mantine/spotlight";
 import { SpotlightProductAction } from "./components/common/spotlight-product-action";
 import { HeaderAction } from "./components/header/header";
 import type { LoaderArgs } from "@remix-run/node";
-import {
-  createColorSchemeSession,
-  getColorSchemeValue,
-} from "./utils/session.server";
 
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
@@ -49,7 +45,6 @@ type LoaderData = {
     links?: { link: string; label: string }[];
   }[];
   user: { name: string; image: string };
-  colorScheme?: string;
 };
 export async function loader({ request }: LoaderArgs) {
   const actions = [
@@ -145,24 +140,17 @@ export async function loader({ request }: LoaderArgs) {
       "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=255&q=80",
   };
 
-  const colorScheme = await getColorSchemeValue(request);
-  let data: LoaderData = { actions, links, user, colorScheme };
+  let data: LoaderData = { actions, links, user };
   return json(data);
 }
 
 export default function App() {
   const data = useLoaderData<typeof loader>() as LoaderData;
-  const [colorScheme, setColorScheme] = useState<ColorScheme>(
-    data.colorScheme !== undefined && data.colorScheme === Theme.DARK? Theme.DARK: Theme.LIGHT
-  );
-  const toggleColorScheme = (value?: ColorScheme) => {
-    const matineColorScheme =
-      value || (colorScheme === Theme.DARK ? Theme.LIGHT : Theme.DARK);
-    setColorScheme(matineColorScheme);
-    console.log("remixColorScheme", matineColorScheme);
-
-    createColorSchemeSession(matineColorScheme);
-  };
+  const [colorScheme, setColorScheme] = useState<ColorScheme>(Theme.LIGHT);
+  const toggleColorScheme = (value?: ColorScheme) =>
+    setColorScheme(
+      value || (colorScheme === Theme.DARK ? Theme.LIGHT : Theme.DARK)
+    );
 
   return (
     <ColorSchemeProvider
