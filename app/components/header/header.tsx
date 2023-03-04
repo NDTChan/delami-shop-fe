@@ -13,12 +13,10 @@ import {
   Menu,
   Switch,
   UnstyledButton,
-  useMantineColorScheme
+  useMantineColorScheme,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import {
-  openSpotlight
-} from "@mantine/spotlight";
+import { openSpotlight } from "@mantine/spotlight";
 import {
   IconChevronDown,
   IconHeart,
@@ -32,7 +30,7 @@ import {
   IconStar,
   IconSun,
   IconSwitchHorizontal,
-  IconTrash
+  IconTrash,
 } from "@tabler/icons";
 import { useState } from "react";
 import { Theme } from "~/root";
@@ -158,7 +156,11 @@ export function HeaderAction({ links, user }: LoaderData) {
 
     if (menuItems) {
       return (
-        <Menu key={link.label} trigger="hover" exitTransitionDuration={0}>
+        <Menu
+          key={link.label}
+          trigger="hover"
+          transitionProps={{ transition: "rotate-right", duration: 150 }}
+        >
           <Menu.Target>
             <a
               href={link.link}
@@ -205,13 +207,14 @@ export function HeaderAction({ links, user }: LoaderData) {
             padding="xl"
             size="300px"
             position="left"
-            overlayColor={
-              theme.colorScheme === "dark"
-                ? theme.colors.dark[9]
-                : theme.colors.gray[2]
-            }
-            overlayOpacity={0.55}
-            overlayBlur={3}
+            overlayProps={{
+              color:
+                theme.colorScheme === "dark"
+                  ? theme.colors.dark[9]
+                  : theme.colors.gray[2],
+              opacity: 0.55,
+              blur: 3,
+            }}
           >
             <NavbarComponent />
           </Drawer>
@@ -250,7 +253,7 @@ export function HeaderAction({ links, user }: LoaderData) {
           <Menu
             width={260}
             position="bottom-end"
-            transition="pop-top-right"
+            transitionProps={{ transition: "pop-top-right" }}
             onClose={() => setUserMenuOpened(false)}
             onOpen={() => setUserMenuOpened(true)}
           >
@@ -349,7 +352,7 @@ export function HeaderAction({ links, user }: LoaderData) {
             </ActionIcon>
           </MediaQuery> */}
 
-          <Indicator showZero={false} dot={false} label={1} inline size={18}>
+          <Indicator label={1} inline size={18}>
             <ActionIcon color={"dark"} size="lg" variant="transparent">
               <IconShoppingCart size={27} />
             </ActionIcon>

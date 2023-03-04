@@ -6,12 +6,17 @@ import { users } from "@prisma/client";
 import _ from "lodash";
 
 type LoginForm = {
+  input: string;
+  password: string;
+};
+
+type RegisterForm = {
   mobile: string;
   email: string;
   password: string;
 };
 
-export async function register({ mobile, email, password }: LoginForm) {
+export async function register({ mobile, email, password }: RegisterForm) {
   const passwordHash = await bcrypt.hash(password, 10);
   const user = await db.users.create({
     data: { mobile, email, password: passwordHash },
@@ -19,13 +24,15 @@ export async function register({ mobile, email, password }: LoginForm) {
   return user;
 }
 
-export async function login({ mobile, email, password }: LoginForm) {
-  const user =
-    await db.$queryRaw<users>`SELECT * FROM users WHERE email=${email} OR mobile=${mobile}`;
-  if (!user) return null;
-  const isCorrectPassword = await bcrypt.compare(password, user.password);
+export async function login({ input, password }: LoginForm) {
+  const users = await db.$queryRaw<
+    users[]
+  >`SELECT * FROM users WHERE email=${input} OR mobile=${input}`;
+
+  if (_.isArray(users) && users.length === 0) return null;
+  const isCorrectPassword = await bcrypt.compare(password, users[0].password);
   if (!isCorrectPassword) return null;
-  return user;
+  return users[0];
 }
 
 const sessionSecret = process.env.SESSION_SECRET;
@@ -55,7 +62,7 @@ function getUserSession(request: Request) {
 export async function getUserId(request: Request) {
   const session = await getUserSession(request);
   const userId = session.get("userId");
-  if (!userId || typeof userId !== "string") return null;
+  if (!userId || typeof userId !== "bigint") return null;
   return userId;
 }
 
@@ -80,7 +87,7 @@ export async function getUser(request: Request) {
 
   try {
     const user = await db.users.findUnique({
-      where: { id: _.toNumber(userId) },
+      where: { id: userId },
     });
     return user;
   } catch {
@@ -97,7 +104,7 @@ export async function logout(request: Request) {
   });
 }
 
-export async function createUserSession(userId: string, redirectTo: string) {
+export async function createUserSession(userId: bigint, redirectTo: string) {
   const session = await storage.getSession();
   session.set("userId", userId);
   return redirect(redirectTo, {
