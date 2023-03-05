@@ -21,7 +21,7 @@ import {
 import { useState } from "react";
 import { SpotlightAction, SpotlightProvider } from "@mantine/spotlight";
 import { SpotlightProductAction } from "./components/common/spotlight-product-action";
-import { HeaderAction } from "./components/header/header";
+import { HeaderAction } from "./components/header";
 import type { LoaderArgs } from "@remix-run/node";
 
 export const meta: MetaFunction = () => ({

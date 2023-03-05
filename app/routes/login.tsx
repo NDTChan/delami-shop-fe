@@ -13,11 +13,12 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { ActionArgs, json, LoaderArgs } from "@remix-run/node";
-import { useActionData, useSubmit } from "@remix-run/react";
+import { Link, useActionData, useSubmit } from "@remix-run/react";
 import { IconAlertTriangle } from "@tabler/icons";
 import _ from "lodash";
+import { login } from "~/servers/auth/auth.service";
 import { badRequest } from "~/utils/request.server";
-import { createUserSession, login } from "~/utils/session.server";
+import { createUserSession } from "~/utils/session.server";
 
 const useStyles = createStyles((theme) => ({
   invalid: {
@@ -31,10 +32,6 @@ const useStyles = createStyles((theme) => ({
     color: theme.colors.red[theme.colorScheme === "dark" ? 7 : 6],
   },
 }));
-
-export const loader = async ({ request }: LoaderArgs) => {
-  return json({});
-};
 
 function validateUrl(url: string) {
   let urls = ["/"];
@@ -56,7 +53,7 @@ export const action = async ({ request }: ActionArgs) => {
       formError: `Thông tin đăng nhập/ mật khẩu không chính xác`,
     });
   }
-  return createUserSession(user.id, redirectTo);
+  return createUserSession(_.toString(user.id), redirectTo);
 };
 
 export default function Login() {
@@ -70,15 +67,11 @@ export default function Login() {
     validate: {
       input: (value) => {
         if (_.isEmpty(value)) {
-          return "Bạn phải nhập mật khẩu";
+          return "Bạn phải nhập email hoặc số điện thoại";
         }
 
         if (!formatEmailOrMobile.test(value)) {
           return "Không đúng định dạng số điện thoại hay email";
-        }
-
-        if (!_.isEmpty(actionData?.formError)) {
-          return actionData?.formError;
         }
       },
       password: (value) => (_.isEmpty(value) ? "Bạn phải nhập mật khẩu" : null),
@@ -95,16 +88,12 @@ export default function Login() {
           fontWeight: 900,
         })}
       >
-        Welcome back!
+        Chào mừng quý khách
       </Title>
       <Text color="dimmed" size="sm" align="center" mt={5}>
-        Do not have an account yet?{" "}
-        <Anchor<"a">
-          href="#"
-          size="sm"
-          onClick={(event) => event.preventDefault()}
-        >
-          Create account
+        Chưa có tài khoản?{" "}
+        <Anchor size="sm" component={Link} to="/auth/register">
+          Đăng ký
         </Anchor>
       </Text>
 
@@ -121,7 +110,7 @@ export default function Login() {
             label="Email hoặc số điện thoại"
             placeholder="Nhập email hoặc số điện thoại"
             {...form.getInputProps("input")}
-            error={actionData?.formError}
+            error={actionData?.formError ?? form.errors.input}
             rightSection={
               !_.isEmpty(form.errors.input) ? (
                 <IconAlertTriangle
@@ -133,24 +122,23 @@ export default function Login() {
             }
           />
           <PasswordInput
-            name="password"
             label="Mật khẩu"
             placeholder="Nhập mật khẩu"
             {...form.getInputProps("password")}
             mt="md"
           />
           <Group position="apart" mt="lg">
-            <Checkbox label="Remember me" sx={{ lineHeight: 1 }} />
+            <Checkbox label="Ghi nhớ" sx={{ lineHeight: 1 }} />
             <Anchor<"a">
               onClick={(event) => event.preventDefault()}
               href="#"
               size="sm"
             >
-              Forgot password?
+              Quên mật khẩu?
             </Anchor>
           </Group>
           <Button type="submit" fullWidth mt="xl">
-            Sign in
+            Đăng nhập
           </Button>
         </form>
       </Paper>

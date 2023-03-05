@@ -34,8 +34,8 @@ import {
 } from "@tabler/icons";
 import { useState } from "react";
 import { Theme } from "~/root";
-import { NavbarComponent } from "../navbar/navbar";
-import { DelamiLogo } from "../logo/delami-logo";
+import { NavbarComponent } from "../navbar";
+import { DelamiLogo } from "../logo";
 
 const HEADER_HEIGHT = 60;
 

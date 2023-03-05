@@ -227,6 +227,7 @@ model users {
   email       String?       @unique(map: "uq_email") @db.VarChar(255)
   first_name  String?       @db.VarChar(255)
   last_name   String?       @db.VarChar(255)
+  fullName    String?       @db.VarChar(255)
   password    String        @db.VarChar(255)
   username    String?       @db.VarChar(255)
   is_enabled  Boolean       @default(dbgenerated("b'1'")) @db.Bit(1)

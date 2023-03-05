@@ -1,4 +1,4 @@
-import { createStyles, Navbar, ScrollArea } from '@mantine/core';
+import { createStyles, getStylesRef, Navbar, ScrollArea } from '@mantine/core';
 import {
   IconAdjustments, IconCalendarStats, IconFileAnalytics, IconGauge, IconLock,
   IconLogout, IconNotes, IconPresentationAnalytics, IconSelector, IconSwitchHorizontal
@@ -43,8 +43,8 @@ const mockdata = [
   },
 ];
 
-const useStyles = createStyles((theme, _params, getRef) => {
-  const icon = getRef('icon');
+const useStyles = createStyles((theme, _params) => {
+  const icon = getStylesRef('icon');
   return {
     navbar: {
       backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.white,

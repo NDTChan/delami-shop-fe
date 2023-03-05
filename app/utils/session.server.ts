@@ -1,39 +1,6 @@
-import bcrypt from "bcryptjs";
 import { createCookieSessionStorage, redirect } from "@remix-run/node";
 
 import { db } from "./db.server";
-import { users } from "@prisma/client";
-import _ from "lodash";
-
-type LoginForm = {
-  input: string;
-  password: string;
-};
-
-type RegisterForm = {
-  mobile: string;
-  email: string;
-  password: string;
-};
-
-export async function register({ mobile, email, password }: RegisterForm) {
-  const passwordHash = await bcrypt.hash(password, 10);
-  const user = await db.users.create({
-    data: { mobile, email, password: passwordHash },
-  });
-  return user;
-}
-
-export async function login({ input, password }: LoginForm) {
-  const users = await db.$queryRaw<
-    users[]
-  >`SELECT * FROM users WHERE email=${input} OR mobile=${input}`;
-
-  if (_.isArray(users) && users.length === 0) return null;
-  const isCorrectPassword = await bcrypt.compare(password, users[0].password);
-  if (!isCorrectPassword) return null;
-  return users[0];
-}
 
 const sessionSecret = process.env.SESSION_SECRET;
 if (!sessionSecret) {
@@ -104,7 +71,7 @@ export async function logout(request: Request) {
   });
 }
 
-export async function createUserSession(userId: bigint, redirectTo: string) {
+export async function createUserSession(userId: String, redirectTo: string) {
   const session = await storage.getSession();
   session.set("userId", userId);
   return redirect(redirectTo, {
