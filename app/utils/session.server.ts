@@ -1,6 +1,6 @@
 import { createCookieSessionStorage, redirect } from "@remix-run/node";
 
-import { db } from "./db.server";
+import { prisma } from "./prisma.server";
 
 const sessionSecret = process.env.SESSION_SECRET;
 if (!sessionSecret) {
@@ -53,7 +53,7 @@ export async function getUser(request: Request) {
   }
 
   try {
-    const user = await db.users.findUnique({
+    const user = await prisma.users.findUnique({
       where: { id: userId },
     });
     return user;

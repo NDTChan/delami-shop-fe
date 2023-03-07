@@ -1,8 +1,9 @@
+import { ROLE } from "~/constants/role.const";
 import { RegisterForm } from "~/interfaces/auth";
-import { db } from "~/utils/db.server";
+import { prisma } from "~/utils/prisma.server";
 
 export async function getUserByPhoneOrEmail(input: string) {
-  return await db.users.findMany({
+  return await prisma.users.findMany({
     where: {
       OR: [{ email: input }, { mobile: input }],
     },
@@ -10,13 +11,13 @@ export async function getUserByPhoneOrEmail(input: string) {
 }
 
 export async function getUserByMobile(mobile: string) {
-  return await db.users.findUnique({
+  return await prisma.users.findUnique({
     where: { mobile },
   });
 }
 
 export async function getUserByEmail(email: string) {
-  return await db.users.findUnique({
+  return await prisma.users.findUnique({
     where: { email },
   });
 }
@@ -27,13 +28,13 @@ export async function createUser({
   password,
   fullName,
 }: RegisterForm) {
-  const user = await db.users.create({
+  const user = await prisma.users.create({
     data: { mobile, email, password, fullName, user_roles: {
       create:[
         {
           roles: {
             connect: {
-              id: 2
+              id: ROLE.USER
             }
           }
         }

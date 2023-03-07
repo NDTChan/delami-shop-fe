@@ -1,8 +1,6 @@
-import _ from "lodash";
-import { RegisterForm, LoginForm } from "~/interfaces/auth";
-import { db } from "~/utils/db.server";
 import bcrypt from "bcryptjs";
-import { users } from "@prisma/client";
+import _ from "lodash";
+import { LoginForm, RegisterForm } from "~/interfaces/auth";
 import { createUser, getUserByPhoneOrEmail } from "./auth.data";
 
 export async function register({

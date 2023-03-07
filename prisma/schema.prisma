@@ -143,8 +143,22 @@ model product {
   product_category product_category[]
   product_meta     product_meta[]
   product_review   product_review[]
+  product_image    product_image[]
 
   @@index([userId], map: "idx_product_user")
+}
+
+model product_image {
+  id        BigInt    @id @default(autoincrement())
+  name      String    @db.VarChar(100)
+  order     Int       @default(0) @db.SmallInt
+  productId BigInt
+  createdAt DateTime  @db.DateTime(0)
+  updatedAt DateTime? @db.DateTime(0)
+
+  product product @relation(fields: [productId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_image_product")
+
+  @@index([productId], map: "fk_image_product")
 }
 
 model product_category {
@@ -189,7 +203,7 @@ model product_review {
 
 model roles {
   id         Int          @id @default(autoincrement())
-  name       String?      @db.VarChar(255)
+  name       String?      @db.VarChar(10)
   user_roles user_roles[]
 }
 
@@ -224,14 +238,13 @@ model user_roles {
 
 model users {
   id          BigInt        @id @default(autoincrement())
-  email       String?       @unique(map: "uq_email") @db.VarChar(255)
-  first_name  String?       @db.VarChar(255)
-  last_name   String?       @db.VarChar(255)
-  fullName    String?       @db.VarChar(255)
+  email       String?       @unique(map: "uq_email") @db.VarChar(100)
+  fullName    String?       @db.VarChar(100)
   password    String        @db.VarChar(255)
-  username    String?       @db.VarChar(255)
+  username    String?       @db.VarChar(100)
   is_enabled  Boolean       @default(dbgenerated("b'1'")) @db.Bit(1)
   mobile      String?       @unique(map: "uq_mobile") @db.VarChar(15)
+  image       String?       @db.VarChar(200)
   cart        cart[]
   order       order[]
   product     product[]
