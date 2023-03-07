@@ -1,5 +1,6 @@
 import { createCookieSessionStorage, redirect } from "@remix-run/node";
 
+import _ from "lodash";
 import { prisma } from "./prisma.server";
 
 const sessionSecret = process.env.SESSION_SECRET;
@@ -29,7 +30,7 @@ function getUserSession(request: Request) {
 export async function getUserId(request: Request) {
   const session = await getUserSession(request);
   const userId = session.get("userId");
-  if (!userId || typeof userId !== "bigint") return null;
+  if (!userId) return null;
   return userId;
 }
 
@@ -54,7 +55,8 @@ export async function getUser(request: Request) {
 
   try {
     const user = await prisma.users.findUnique({
-      where: { id: userId },
+      where: { id: _.toNumber(userId) },
+      select: { fullName: true, mobile: true, image: true, email: true },
     });
     return user;
   } catch {

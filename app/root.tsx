@@ -3,11 +3,12 @@ import {
   ColorScheme,
   ColorSchemeProvider,
   createEmotionCache,
-  MantineProvider,
-  useMantineTheme,
+  MantineProvider
 } from "@mantine/core";
 
 import { StylesPlaceholder } from "@mantine/remix";
+import { SpotlightAction, SpotlightProvider } from "@mantine/spotlight";
+import type { LoaderArgs } from "@remix-run/node";
 import { json, MetaFunction } from "@remix-run/node";
 import {
   Links,
@@ -19,10 +20,11 @@ import {
   useLoaderData,
 } from "@remix-run/react";
 import { useState } from "react";
-import { SpotlightAction, SpotlightProvider } from "@mantine/spotlight";
 import { SpotlightProductAction } from "./components/common/spotlight-product-action";
 import { HeaderAction } from "./components/header";
-import type { LoaderArgs } from "@remix-run/node";
+import { getUser } from "./utils/session.server";
+import _ from "lodash";
+import { users } from "@prisma/client";
 
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
@@ -44,7 +46,7 @@ type LoaderData = {
     label: string;
     links?: { link: string; label: string }[];
   }[];
-  user: { name: string; image: string };
+  user?: users;
 };
 export async function loader({ request }: LoaderArgs) {
   const actions = [
@@ -133,12 +135,12 @@ export async function loader({ request }: LoaderArgs) {
       ],
     },
   ];
-  const user = {
-    name: "Jane Spoonfighter",
-    email: "janspoon@fighter.dev",
-    image:
-      "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=255&q=80",
-  };
+
+  const user  = await getUser(request) as users;
+
+  if (!_.isNull(user)) {
+    user.image = "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=255&q=80"; 
+  }
 
   let data: LoaderData = { actions, links, user };
   return json(data);

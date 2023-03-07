@@ -1,7 +1,7 @@
 import {
   ActionIcon,
-  Avatar,
   Burger,
+  Button,
   Center,
   Container,
   createStyles,
@@ -12,30 +12,23 @@ import {
   MediaQuery,
   Menu,
   Switch,
-  UnstyledButton,
   useMantineColorScheme,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { openSpotlight } from "@mantine/spotlight";
 import {
   IconChevronDown,
-  IconHeart,
-  IconLogout,
-  IconMessage,
   IconMoonStars,
-  IconPlayerPause,
   IconSearch,
-  IconSettings,
   IconShoppingCart,
-  IconStar,
   IconSun,
-  IconSwitchHorizontal,
-  IconTrash,
 } from "@tabler/icons";
-import { useState } from "react";
 import { Theme } from "~/root";
-import { NavbarComponent } from "../navbar";
 import { DelamiLogo } from "../logo";
+import { NavbarComponent } from "../navbar";
+import { UserMenu } from "./user-menu";
+import { users } from "@prisma/client";
+import _ from "lodash";
 
 const HEADER_HEIGHT = 60;
 
@@ -100,22 +93,6 @@ const useStyles = createStyles((theme) => ({
     },
   },
 
-  userActive: {
-    backgroundColor:
-      theme.colorScheme === "dark" ? theme.colors.dark[8] : theme.white,
-  },
-
-  linkActive: {
-    "&, &:hover": {
-      backgroundColor: theme.fn.variant({
-        variant: "light",
-        color: theme.primaryColor,
-      }).background,
-      color: theme.fn.variant({ variant: "light", color: theme.primaryColor })
-        .color,
-    },
-  },
-
   dropdown: {
     position: "absolute",
     top: HEADER_HEIGHT,
@@ -139,14 +116,14 @@ type LoaderData = {
     label: string;
     links?: { link: string; label: string }[];
   }[];
-  user: { name: string; image: string };
+  user?: users;
 };
 
 export function HeaderAction({ links, user }: LoaderData) {
   const { classes, theme, cx } = useStyles();
 
   const [opened, { toggle, close }] = useDisclosure(false);
-  const [userMenuOpened, setUserMenuOpened] = useState(false);
+
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
 
   const items = links.map((link) => {
@@ -189,7 +166,6 @@ export function HeaderAction({ links, user }: LoaderData) {
       </a>
     );
   });
-
   return (
     <Header height={HEADER_HEIGHT} sx={{ borderBottom: 0 }} mb={120}>
       <Container className={classes.inner} fluid>
@@ -245,112 +221,15 @@ export function HeaderAction({ links, user }: LoaderData) {
         <Group spacing={20} className={classes.links}>
           {items}
         </Group>
+        {_.isNull(user) ? (
+          <Button> Đăng nhập </Button>
+        ) : (
+          <UserMenu user={user} />
+        )}
         <Group position="center" my={"xl"}>
           <ActionIcon color={"dark"} size="lg" variant="transparent">
             <IconSearch onClick={() => openSpotlight()} size={27} />
           </ActionIcon>
-
-          <Menu
-            width={260}
-            position="bottom-end"
-            transitionProps={{ transition: "pop-top-right" }}
-            onClose={() => setUserMenuOpened(false)}
-            onOpen={() => setUserMenuOpened(true)}
-          >
-            <Menu.Target>
-              <UnstyledButton
-                className={cx(classes.user, {
-                  [classes.userActive]: userMenuOpened,
-                })}
-              >
-                <Group spacing={7}>
-                  <Avatar
-                    src={user.image}
-                    alt={user.name}
-                    radius="xl"
-                    size={30}
-                  />
-                  {/* <MediaQuery smallerThan={'lg'} styles={{ display: 'none' }}>
-                    <Text weight={500} size="sm" sx={{ lineHeight: 1 }} mr={3}>
-                      {user.name}
-                    </Text>
-                  </MediaQuery> */}
-                  <IconChevronDown size={12} stroke={1.5} />
-                </Group>
-              </UnstyledButton>
-            </Menu.Target>
-            <Menu.Dropdown>
-              <Menu.Item
-                icon={
-                  <IconHeart
-                    size={14}
-                    color={theme.colors.red[6]}
-                    stroke={1.5}
-                  />
-                }
-              >
-                Liked posts
-              </Menu.Item>
-              <Menu.Item
-                icon={
-                  <IconStar
-                    size={14}
-                    color={theme.colors.yellow[6]}
-                    stroke={1.5}
-                  />
-                }
-              >
-                Saved posts
-              </Menu.Item>
-              <Menu.Item
-                icon={
-                  <IconMessage
-                    size={14}
-                    color={theme.colors.blue[6]}
-                    stroke={1.5}
-                  />
-                }
-              >
-                Your comments
-              </Menu.Item>
-
-              <Menu.Label>Settings</Menu.Label>
-              <Menu.Item icon={<IconSettings size={14} stroke={1.5} />}>
-                Account settings
-              </Menu.Item>
-              <Menu.Item icon={<IconSwitchHorizontal size={14} stroke={1.5} />}>
-                Change account
-              </Menu.Item>
-              <Menu.Item icon={<IconLogout size={14} stroke={1.5} />}>
-                Logout
-              </Menu.Item>
-
-              <Menu.Divider />
-
-              <Menu.Label>Danger zone</Menu.Label>
-              <Menu.Item icon={<IconPlayerPause size={14} stroke={1.5} />}>
-                Pause subscription
-              </Menu.Item>
-              <Menu.Item
-                color="red"
-                icon={<IconTrash size={14} stroke={1.5} />}
-              >
-                Delete account
-              </Menu.Item>
-            </Menu.Dropdown>
-          </Menu>
-          {/* <MediaQuery smallerThan={'lg'} styles={{ display: 'none' }}>
-            <Autocomplete
-              placeholder="Search"
-              icon={<IconSearch size={16} stroke={1.5} />}
-              data={['React', 'Angular', 'Vue', 'Next.js', 'Riot.js', 'Svelte', 'Blitz.js']}
-            />
-          </MediaQuery> */}
-          {/* <MediaQuery largerThan={'lg'} styles={{ display: 'none' }}>
-            <ActionIcon color={'dark'} size="lg" variant="transparent">
-              <IconSearch size={27} />
-            </ActionIcon>
-          </MediaQuery> */}
 
           <Indicator label={1} inline size={18}>
             <ActionIcon color={"dark"} size="lg" variant="transparent">
