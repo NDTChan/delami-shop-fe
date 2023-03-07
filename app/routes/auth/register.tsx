@@ -1,9 +1,11 @@
 import {
-  Button, Container,
-  createStyles, Paper,
+  Button,
+  Container,
+  createStyles,
+  Paper,
   PasswordInput,
   TextInput,
-  Title
+  Title,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { ActionArgs, redirect } from "@remix-run/node";
@@ -12,13 +14,15 @@ import {
   IconAlertTriangle,
   IconAt,
   IconPassword,
-  IconPhone
+  IconPhone,
 } from "@tabler/icons";
 import _ from "lodash";
 import {
-  getUserByEmail,
-  getUserByMobile
-} from "~/servers/auth/auth.data";
+  REGEX_EMAIL,
+  REGEX_VN_FULLNAME,
+  REGEX_VN_PHONE,
+} from "~/constants/regex.const";
+import { getUserByEmail, getUserByMobile } from "~/servers/auth/auth.data";
 import { register } from "~/servers/auth/auth.service";
 import { badRequest } from "~/utils/request.server";
 
@@ -56,7 +60,9 @@ export const action = async ({ request }: ActionArgs) => {
 
   if (!_.isNull(userByMobile)) {
     return badRequest({
-      formError: { mobile: `Số điện thoại đã được đăng ký, vui lòng kiểm tra lại` },
+      formError: {
+        mobile: `Số điện thoại đã được đăng ký, vui lòng kiểm tra lại`,
+      },
     });
   }
 
@@ -91,9 +97,7 @@ export default function Login() {
           return "Bạn phải nhập email";
         }
 
-        if (
-          !/^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6})*$/.test(value)
-        ) {
+        if (!REGEX_EMAIL.test(value)) {
           return "Không đúng định dạng email";
         }
       },
@@ -102,7 +106,7 @@ export default function Login() {
           return "Bạn phải nhập số điện thoại";
         }
 
-        if (!/(84|0[3|5|7|8|9])+([0-9]{8})\b/g.test(value)) {
+        if (!REGEX_VN_PHONE.test(value)) {
           return "Không đúng định dạng số điện thoại";
         }
       },
@@ -112,8 +116,8 @@ export default function Login() {
           return "Bạn phải nhập họ và tên";
         }
 
-        if (!(/^[a-zA-Z!@#\$%\^\&*\)\(+=._-]{2,}$/g.test(removeAscent(value)))) {
-          return "Bạn không được nhập kí tự đặc biệt và số";
+        if (!REGEX_VN_FULLNAME.test(value)) {
+          return "Bạn phải nhập chữ tiếng việt";
         }
       },
     },

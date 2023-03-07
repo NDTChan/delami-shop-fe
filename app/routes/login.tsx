@@ -16,6 +16,7 @@ import { ActionArgs, json, LoaderArgs } from "@remix-run/node";
 import { Link, useActionData, useSubmit } from "@remix-run/react";
 import { IconAlertTriangle } from "@tabler/icons";
 import _ from "lodash";
+import { REGEX_COMBINE_EMAIL_VS_VN_PHONE } from "~/constants/regex.const";
 import { login } from "~/servers/auth/auth.service";
 import { badRequest } from "~/utils/request.server";
 import { createUserSession } from "~/utils/session.server";
@@ -70,7 +71,7 @@ export default function Login() {
           return "Bạn phải nhập email hoặc số điện thoại";
         }
 
-        if (!formatEmailOrMobile.test(value)) {
+        if (!REGEX_COMBINE_EMAIL_VS_VN_PHONE.test(value)) {
           return "Không đúng định dạng số điện thoại hay email";
         }
       },
