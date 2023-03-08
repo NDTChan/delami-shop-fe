@@ -22,6 +22,7 @@ import {
   IconSearch,
   IconShoppingCart,
   IconSun,
+  IconUser,
 } from "@tabler/icons";
 import { Theme } from "~/root";
 import { DelamiLogo } from "../logo";
@@ -29,6 +30,7 @@ import { NavbarComponent } from "../navbar";
 import { UserMenu } from "./user-menu";
 import { users } from "@prisma/client";
 import _ from "lodash";
+import { Link } from "@remix-run/react";
 
 const HEADER_HEIGHT = 60;
 
@@ -194,11 +196,6 @@ export function HeaderAction({ links, user }: LoaderData) {
           >
             <NavbarComponent />
           </Drawer>
-          {/* <Transition transition="slide-left" duration={200} mounted={opened}>
-            {(styles) => (
-              <NavbarComponent />
-            )}
-          </Transition> */}
 
           <DelamiLogo color={colorScheme} />
 
@@ -221,15 +218,25 @@ export function HeaderAction({ links, user }: LoaderData) {
         <Group spacing={20} className={classes.links}>
           {items}
         </Group>
-        {_.isNull(user) ? (
-          <Button> Đăng nhập </Button>
-        ) : (
-          <UserMenu user={user} />
-        )}
-        <Group position="center" my={"xl"}>
+
+        <Group position="center" my={"xl"} mr={"xl"}>
           <ActionIcon color={"dark"} size="lg" variant="transparent">
             <IconSearch onClick={() => openSpotlight()} size={27} />
           </ActionIcon>
+
+          {_.isNull(user) ? (
+            <ActionIcon
+              component={Link}
+              color={"dark"}
+              size="lg"
+              variant="transparent"
+              to={"/login"}
+            >
+              <IconUser size={27} />
+            </ActionIcon>
+          ) : (
+            <UserMenu user={user} />
+          )}
 
           <Indicator label={1} inline size={18}>
             <ActionIcon color={"dark"} size="lg" variant="transparent">

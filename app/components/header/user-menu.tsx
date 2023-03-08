@@ -1,20 +1,23 @@
 import {
-    Avatar,
-    Group,
-    Menu,
-    UnstyledButton,
-    createStyles
+  Avatar,
+  Group,
+  MediaQuery,
+  Menu,
+  Text,
+  UnstyledButton,
+  createStyles,
 } from "@mantine/core";
+import { Link, useSubmit } from "@remix-run/react";
 import {
-    IconChevronDown,
-    IconHeart,
-    IconLogout,
-    IconMessage,
-    IconPlayerPause,
-    IconSettings,
-    IconStar,
-    IconSwitchHorizontal,
-    IconTrash
+  IconChevronDown,
+  IconHeart,
+  IconLogout,
+  IconMessage,
+  IconPlayerPause,
+  IconSettings,
+  IconStar,
+  IconSwitchHorizontal,
+  IconTrash,
 } from "@tabler/icons";
 import { useState } from "react";
 const useStyles = createStyles((theme) => ({
@@ -42,7 +45,7 @@ const useStyles = createStyles((theme) => ({
 export function UserMenu({ user }: any) {
   const [userMenuOpened, setUserMenuOpened] = useState(false);
   const { classes, theme, cx } = useStyles();
-
+  const submit = useSubmit();
   return (
     <Menu
       width={260}
@@ -58,12 +61,17 @@ export function UserMenu({ user }: any) {
           })}
         >
           <Group spacing={7}>
-            <Avatar src={user.image} alt={user.name} radius="xl" size={30} />
-            {/* <MediaQuery smallerThan={'lg'} styles={{ display: 'none' }}>
-                  <Text weight={500} size="sm" sx={{ lineHeight: 1 }} mr={3}>
-                    {user.name}
-                  </Text>
-                </MediaQuery> */}
+            <Avatar
+              src={user.image}
+              alt={user.fullName}
+              radius="xl"
+              size={30}
+            />
+            <MediaQuery smallerThan={"lg"} styles={{ display: "none" }}>
+              <Text weight={500} size="sm" sx={{ lineHeight: 1 }} mr={3}>
+                {user.fullName}
+              </Text>
+            </MediaQuery>
             <IconChevronDown size={12} stroke={1.5} />
           </Group>
         </UnstyledButton>
@@ -98,7 +106,16 @@ export function UserMenu({ user }: any) {
         <Menu.Item icon={<IconSwitchHorizontal size={14} stroke={1.5} />}>
           Change account
         </Menu.Item>
-        <Menu.Item icon={<IconLogout size={14} stroke={1.5} />}>
+        <Menu.Item
+          onClick={() =>
+            submit(null, {
+              method: "post",
+              action: "/action/logout",
+              replace: true,
+            })
+          }
+          icon={<IconLogout size={14} stroke={1.5} />}
+        >
           Logout
         </Menu.Item>
 
