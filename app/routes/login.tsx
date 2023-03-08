@@ -5,6 +5,7 @@ import {
   Container,
   createStyles,
   Group,
+  LoadingOverlay,
   Paper,
   PasswordInput,
   Text,
@@ -13,7 +14,7 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { ActionArgs, json, LoaderArgs } from "@remix-run/node";
-import { Link, useActionData, useSubmit } from "@remix-run/react";
+import { Link, useActionData, useNavigation, useSubmit } from "@remix-run/react";
 import { IconAlertTriangle } from "@tabler/icons";
 import _ from "lodash";
 import { REGEX_COMBINE_EMAIL_VS_VN_PHONE } from "~/constants/regex.const";
@@ -80,8 +81,13 @@ export default function Login() {
   });
 
   const submit = useSubmit();
+  const navigation = useNavigation();
   return (
     <Container size={420} my={40}>
+      <LoadingOverlay
+        visible={_.isEqual(navigation.state, "submitting")}
+        overlayBlur={2}
+      />
       <Title
         align="center"
         sx={(theme) => ({
