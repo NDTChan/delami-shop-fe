@@ -3,13 +3,14 @@ import {
   ColorScheme,
   ColorSchemeProvider,
   createEmotionCache,
-  MantineProvider
+  MantineProvider,
 } from "@mantine/core";
 
 import { StylesPlaceholder } from "@mantine/remix";
 import { SpotlightAction, SpotlightProvider } from "@mantine/spotlight";
 import type { LoaderArgs } from "@remix-run/node";
 import { json, MetaFunction } from "@remix-run/node";
+import { typedjson, useTypedLoaderData } from "remix-typedjson";
 import {
   Links,
   LiveReload,
@@ -24,7 +25,8 @@ import { SpotlightProductAction } from "./components/common/spotlight-product-ac
 import { HeaderAction } from "./components/header";
 import { getUser } from "./utils/session.server";
 import _ from "lodash";
-import { users } from "@prisma/client";
+import { category, users } from "@prisma/client";
+import { getMainCategory } from "./servers/category/category.service";
 
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
@@ -47,6 +49,7 @@ type LoaderData = {
     links?: { link: string; label: string }[];
   }[];
   user?: users;
+  category?: category;
 };
 export async function loader({ request }: LoaderArgs) {
   const actions = [
@@ -135,25 +138,22 @@ export async function loader({ request }: LoaderArgs) {
       ],
     },
   ];
+  const user = (await getUser(request)) as users;
 
-  const user  = await getUser(request) as users;
+  const category = (await getMainCategory()) as category;
 
-  if (!_.isNull(user)) {
-    user.image = "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=255&q=80"; 
-  }
-
-  let data: LoaderData = { actions, links, user };
-  return json(data);
+  let data: LoaderData = { actions, links, user, category };
+  return typedjson(data);
 }
 
 export default function App() {
-  const data = useLoaderData<typeof loader>() as LoaderData;
+  const data = useTypedLoaderData<typeof loader>() as LoaderData;
   const [colorScheme, setColorScheme] = useState<ColorScheme>(Theme.LIGHT);
   const toggleColorScheme = (value?: ColorScheme) =>
     setColorScheme(
       value || (colorScheme === Theme.DARK ? Theme.LIGHT : Theme.DARK)
     );
-
+  console.log("category", data.category);
   return (
     <ColorSchemeProvider
       colorScheme={colorScheme}

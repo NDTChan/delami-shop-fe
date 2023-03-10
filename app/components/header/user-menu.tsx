@@ -118,16 +118,6 @@ export function UserMenu({ user }: any) {
         >
           Logout
         </Menu.Item>
-
-        <Menu.Divider />
-
-        <Menu.Label>Danger zone</Menu.Label>
-        <Menu.Item icon={<IconPlayerPause size={14} stroke={1.5} />}>
-          Pause subscription
-        </Menu.Item>
-        <Menu.Item color="red" icon={<IconTrash size={14} stroke={1.5} />}>
-          Delete account
-        </Menu.Item>
       </Menu.Dropdown>
     </Menu>
   );

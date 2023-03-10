@@ -9,7 +9,6 @@ import {
   Title,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { useDisclosure } from "@mantine/hooks";
 import { ActionArgs, redirect } from "@remix-run/node";
 import { useActionData, useNavigation, useSubmit } from "@remix-run/react";
 import {
@@ -20,9 +19,7 @@ import {
 } from "@tabler/icons";
 import _ from "lodash";
 import {
-  REGEX_EMAIL,
-  REGEX_VN_FULLNAME,
-  REGEX_VN_PHONE,
+  REGEX_EMAIL
 } from "~/constants/regex.const";
 import { getUserByEmail, getUserByMobile } from "~/servers/auth/auth.data";
 import { register } from "~/servers/auth/auth.service";

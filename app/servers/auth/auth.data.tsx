@@ -29,17 +29,24 @@ export async function createUser({
   fullName,
 }: RegisterForm) {
   const user = await prisma.users.create({
-    data: { mobile, email, password, fullName, user_roles: {
-      create:[
-        {
-          roles: {
-            connect: {
-              id: ROLE.USER
-            }
-          }
-        }
-      ]
-    } },
+    data: {
+      mobile,
+      email,
+      password,
+      fullName,
+      image: "/images/avatar.jpg",
+      user_roles: {
+        create: [
+          {
+            roles: {
+              connect: {
+                id: ROLE.USER,
+              },
+            },
+          },
+        ],
+      },
+    },
   });
   return user;
 }

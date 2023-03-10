@@ -59,8 +59,8 @@ model category {
   metaTitle        String?            @db.VarChar(100)
   slug             String             @db.VarChar(100)
   content          String?            @db.Text
-  category         category?          @relation("categoryTocategory", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_category_parent")
-  other_category   category[]         @relation("categoryTocategory")
+  parent           category?          @relation("CategoryToCategory", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_category_parent")
+  children         category[]         @relation("CategoryToCategory")
   product_category product_category[]
 
   @@index([parentId], map: "idx_category_parent")
