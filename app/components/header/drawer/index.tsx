@@ -1,9 +1,11 @@
 import {
+  ActionIcon,
+  ColorScheme,
   Drawer,
-  MantineTheme,
   createStyles,
   getStylesRef,
   rem,
+  useMantineColorScheme,
 } from "@mantine/core";
 import { users } from "@prisma/client";
 import {
@@ -17,9 +19,13 @@ import {
   IconPresentationAnalytics,
   IconSelector,
   IconSwitchHorizontal,
+  IconUser,
 } from "@tabler/icons";
-import { UserButton } from "./user-button";
 import { LinksGroup } from "~/components/header/drawer/link-group";
+import { UserButton } from "./user-button";
+import { Link } from "@remix-run/react";
+import _ from "lodash";
+import { DelamiLogo } from "~/components/logo";
 
 const useStyles = createStyles((theme) => ({
   section: {
@@ -43,35 +49,44 @@ const useStyles = createStyles((theme) => ({
 
   footer: {
     borderTop: `${rem(1)} solid ${
-      theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[3]
+      theme.colorScheme === "dark" ? theme.colors.dark[4] : theme.colors.gray[3]
     }`,
     paddingTop: theme.spacing.md,
   },
 
   link: {
     ...theme.fn.focusStyles(),
-    display: 'flex',
-    alignItems: 'center',
-    textDecoration: 'none',
+    display: "flex",
+    alignItems: "center",
+    textDecoration: "none",
     fontSize: theme.fontSizes.sm,
-    color: theme.colorScheme === 'dark' ? theme.colors.dark[1] : theme.colors.gray[7],
+    color:
+      theme.colorScheme === "dark"
+        ? theme.colors.dark[1]
+        : theme.colors.gray[7],
     padding: `${theme.spacing.xs} ${theme.spacing.sm}`,
     borderRadius: theme.radius.sm,
     fontWeight: 500,
 
-    '&:hover': {
-      backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
-      color: theme.colorScheme === 'dark' ? theme.white : theme.black,
+    "&:hover": {
+      backgroundColor:
+        theme.colorScheme === "dark"
+          ? theme.colors.dark[6]
+          : theme.colors.gray[0],
+      color: theme.colorScheme === "dark" ? theme.white : theme.black,
 
-      [`& .${getStylesRef('icon')}`]: {
-        color: theme.colorScheme === 'dark' ? theme.white : theme.black,
+      [`& .${getStylesRef("icon")}`]: {
+        color: theme.colorScheme === "dark" ? theme.white : theme.black,
       },
     },
   },
 
   linkIcon: {
-    ref: getStylesRef('icon'),
-    color: theme.colorScheme === 'dark' ? theme.colors.dark[2] : theme.colors.gray[6],
+    ref: getStylesRef("icon"),
+    color:
+      theme.colorScheme === "dark"
+        ? theme.colors.dark[2]
+        : theme.colors.gray[6],
     marginRight: theme.spacing.sm,
   },
 }));
@@ -116,10 +131,12 @@ export function DrawerComponent({
   user,
   opened,
   toggle,
+  colorScheme,
 }: {
   user: users;
   opened: boolean;
   toggle: () => void;
+  colorScheme: ColorScheme;
 }) {
   const { classes, theme } = useStyles();
   const links = mockdata.map((item) => (
@@ -146,12 +163,13 @@ export function DrawerComponent({
       <Drawer.Content>
         <Drawer.Header className={classes.section}>
           <Drawer.Title>
-            <UserButton
-              image={user.image ?? "./images/avatar.jpg"}
-              name={user.fullName ?? ""}
-              email={user.email ?? ""}
-              icon={<IconSelector size={14} stroke={1.5} />}
-            />
+            {!_.isNull(user) ? (
+              <UserButton
+                image={user.image ?? "./images/avatar.jpg"}
+                name={user.fullName ?? ""}
+                email={user.email ?? ""}
+              />
+            ) : null}
           </Drawer.Title>
           <Drawer.CloseButton />
         </Drawer.Header>
@@ -160,25 +178,30 @@ export function DrawerComponent({
             <div className={classes.linksInner}>{links}</div>
           </div>
 
-          <div className={classes.footer}>
-            <a
-              href="#"
-              className={classes.link}
-              onClick={(event) => event.preventDefault()}
-            >
-              <IconSwitchHorizontal className={classes.linkIcon} stroke={1.5} />
-              <span>Change account</span>
-            </a>
+          {!_.isNull(user) ? (
+            <div className={classes.footer}>
+              <a
+                href="#"
+                className={classes.link}
+                onClick={(event) => event.preventDefault()}
+              >
+                <IconSwitchHorizontal
+                  className={classes.linkIcon}
+                  stroke={1.5}
+                />
+                <span>Change account</span>
+              </a>
 
-            <a
-              href="#"
-              className={classes.link}
-              onClick={(event) => event.preventDefault()}
-            >
-              <IconLogout className={classes.linkIcon} stroke={1.5} />
-              <span>Logout</span>
-            </a>
-          </div>
+              <a
+                href="#"
+                className={classes.link}
+                onClick={(event) => event.preventDefault()}
+              >
+                <IconLogout className={classes.linkIcon} stroke={1.5} />
+                <span>Logout</span>
+              </a>
+            </div>
+          ) : null}
         </Drawer.Body>
       </Drawer.Content>
     </Drawer.Root>

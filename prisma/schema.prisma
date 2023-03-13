@@ -59,6 +59,8 @@ model category {
   metaTitle        String?            @db.VarChar(100)
   slug             String             @db.VarChar(100)
   content          String?            @db.Text
+  icon             String?            @db.VarChar(25)
+  order            Int                @default(0) @db.SmallInt
   parent           category?          @relation("CategoryToCategory", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_category_parent")
   children         category[]         @relation("CategoryToCategory")
   product_category product_category[]
@@ -155,8 +157,7 @@ model product_image {
   productId BigInt
   createdAt DateTime  @db.DateTime(0)
   updatedAt DateTime? @db.DateTime(0)
-
-  product product @relation(fields: [productId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_image_product")
+  product   product   @relation(fields: [productId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_image_product")
 
   @@index([productId], map: "fk_image_product")
 }

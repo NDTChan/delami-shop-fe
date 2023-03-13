@@ -17,7 +17,7 @@ import {
   Meta,
   Outlet,
   Scripts,
-  ScrollRestoration
+  ScrollRestoration,
 } from "@remix-run/react";
 import { useState } from "react";
 import { typedjson, useTypedLoaderData } from "remix-typedjson";
@@ -41,7 +41,7 @@ createEmotionCache({ key: "mantine" });
 
 type LoaderData = {
   actions: SpotlightAction[];
-  user?: users;
+  user: users;
   category?: category;
 };
 export async function loader({ request }: LoaderArgs) {
@@ -78,7 +78,6 @@ export async function loader({ request }: LoaderArgs) {
     },
   ];
   const user = (await getUser(request)) as users;
-
   const category = (await getMainCategory()) as category;
 
   let data: LoaderData = { actions, user, category };
@@ -126,7 +125,9 @@ export default function App() {
                         : theme.colors.gray[0],
                   },
                 })}
-                header={<HeaderAction category={data.category} user={data.user} />}
+                header={
+                  <HeaderAction category={data.category} user={data.user} />
+                }
               >
                 <Outlet />
               </AppShell>

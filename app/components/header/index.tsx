@@ -10,7 +10,7 @@ import {
   MediaQuery,
   Menu,
   Switch,
-  useMantineColorScheme
+  useMantineColorScheme,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { openSpotlight } from "@mantine/spotlight";
@@ -22,7 +22,7 @@ import {
   IconSearch,
   IconShoppingCart,
   IconSun,
-  IconUser
+  IconUser,
 } from "@tabler/icons";
 import _ from "lodash";
 import { Theme } from "~/root";
@@ -176,7 +176,12 @@ export function HeaderAction({ category, user }: LoaderData) {
             className={classes.burger}
             size="sm"
           />
-          <DrawerComponent opened={opened} toggle={toggle} user={user} />
+          <DrawerComponent
+            opened={opened}
+            toggle={toggle}
+            user={user}
+            colorScheme={colorScheme}
+          />
 
           <DelamiLogo color={colorScheme} />
 
