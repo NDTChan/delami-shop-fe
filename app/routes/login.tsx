@@ -14,7 +14,12 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { ActionArgs, json, LoaderArgs } from "@remix-run/node";
-import { Link, useActionData, useNavigation, useSubmit } from "@remix-run/react";
+import {
+  Link,
+  useActionData,
+  useNavigation,
+  useSubmit,
+} from "@remix-run/react";
 import { IconAlertTriangle } from "@tabler/icons";
 import _ from "lodash";
 import { REGEX_COMBINE_EMAIL_VS_VN_PHONE } from "~/constants/regex.const";
@@ -114,6 +119,7 @@ export default function Login() {
           )}
         >
           <TextInput
+            autoFocus={true}
             label="Email hoặc số điện thoại"
             placeholder="Nhập email hoặc số điện thoại"
             {...form.getInputProps("input")}

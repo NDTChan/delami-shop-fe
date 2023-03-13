@@ -7,6 +7,7 @@ import {
   UnstyledButton,
   createStyles,
 } from "@mantine/core";
+import { users } from "@prisma/client";
 import { Link, useSubmit } from "@remix-run/react";
 import {
   IconChevronDown,
@@ -42,7 +43,11 @@ const useStyles = createStyles((theme) => ({
       theme.colorScheme === "dark" ? theme.colors.dark[8] : theme.white,
   },
 }));
-export function UserMenu({ user }: any) {
+
+type LoaderData = {
+  user: users;
+};
+export function UserMenu({ user }: LoaderData) {
   const [userMenuOpened, setUserMenuOpened] = useState(false);
   const { classes, theme, cx } = useStyles();
   const submit = useSubmit();
@@ -63,9 +68,9 @@ export function UserMenu({ user }: any) {
           <Group spacing={7}>
             <Avatar
               src={user.image}
-              alt={user.fullName}
+              alt={user.fullName ?? ''}
               radius="xl"
-              size={30}
+              size={40}
             />
             <MediaQuery smallerThan={"lg"} styles={{ display: "none" }}>
               <Text weight={500} size="sm" sx={{ lineHeight: 1 }} mr={3}>

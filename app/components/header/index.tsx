@@ -1,36 +1,34 @@
 import {
   ActionIcon,
   Burger,
-  Button,
   Center,
   Container,
   createStyles,
-  Drawer,
   Group,
   Header,
   Indicator,
   MediaQuery,
   Menu,
   Switch,
-  useMantineColorScheme,
+  useMantineColorScheme
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { openSpotlight } from "@mantine/spotlight";
+import { users } from "@prisma/client";
+import { Link } from "@remix-run/react";
 import {
   IconChevronDown,
   IconMoonStars,
   IconSearch,
   IconShoppingCart,
   IconSun,
-  IconUser,
+  IconUser
 } from "@tabler/icons";
+import _ from "lodash";
 import { Theme } from "~/root";
 import { DelamiLogo } from "../logo";
-import { NavbarComponent } from "../navbar";
+import { DrawerComponent } from "./drawer";
 import { UserMenu } from "./user-menu";
-import { users } from "@prisma/client";
-import _ from "lodash";
-import { Link } from "@remix-run/react";
 
 const HEADER_HEIGHT = 60;
 
@@ -77,6 +75,7 @@ const useStyles = createStyles((theme) => ({
 
   linkLabel: {
     marginRight: 5,
+    textTransform: "uppercase",
   },
 
   user: {
@@ -113,42 +112,41 @@ const useStyles = createStyles((theme) => ({
 }));
 
 type LoaderData = {
-  links: {
-    link: string;
-    label: string;
-    links?: { link: string; label: string }[];
-  }[];
-  user?: users;
+  user: users;
+  category: any;
 };
 
-export function HeaderAction({ links, user }: LoaderData) {
-  const { classes, theme, cx } = useStyles();
+export function HeaderAction({ category, user }: LoaderData) {
+  const { classes, theme } = useStyles();
 
-  const [opened, { toggle, close }] = useDisclosure(false);
+  const [opened, { toggle }] = useDisclosure(false);
 
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
 
-  const items = links.map((link) => {
-    const menuItems = link.links?.map((item) => (
-      <Menu.Item key={item.link}>{item.label}</Menu.Item>
+  const items = category?.children.map((cate: any) => {
+    const menuItems = cate?.children.map((item: any) => (
+      <Menu.Item style={{ textTransform: "uppercase" }} key={item.slug}>
+        {item.title}
+      </Menu.Item>
     ));
-
     if (menuItems) {
       return (
         <Menu
-          key={link.label}
+          key={cate.title}
           trigger="hover"
           transitionProps={{ transition: "rotate-right", duration: 150 }}
         >
           <Menu.Target>
             <a
-              href={link.link}
+              href={cate.slug}
               className={classes.link}
               onClick={(event) => event.preventDefault()}
             >
               <Center>
-                <span className={classes.linkLabel}>{link.label}</span>
-                <IconChevronDown size={12} stroke={1.5} />
+                <span className={classes.linkLabel}>{cate.title}</span>
+                {!_.isEmpty(menuItems) ? (
+                  <IconChevronDown size={12} stroke={1.5} />
+                ) : null}
               </Center>
             </a>
           </Menu.Target>
@@ -159,12 +157,12 @@ export function HeaderAction({ links, user }: LoaderData) {
 
     return (
       <a
-        key={link.label}
-        href={link.link}
+        key={cate.content}
+        href={cate.slug}
         className={classes.link}
         onClick={(event) => event.preventDefault()}
       >
-        {link.label}
+        {cate.content}
       </a>
     );
   });
@@ -178,24 +176,7 @@ export function HeaderAction({ links, user }: LoaderData) {
             className={classes.burger}
             size="sm"
           />
-          <Drawer
-            opened={opened}
-            onClose={toggle}
-            title="Menu"
-            padding="xl"
-            size="300px"
-            position="left"
-            overlayProps={{
-              color:
-                theme.colorScheme === "dark"
-                  ? theme.colors.dark[9]
-                  : theme.colors.gray[2],
-              opacity: 0.55,
-              blur: 3,
-            }}
-          >
-            <NavbarComponent />
-          </Drawer>
+          <DrawerComponent opened={opened} toggle={toggle} user={user} />
 
           <DelamiLogo color={colorScheme} />
 

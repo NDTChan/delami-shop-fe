@@ -8,25 +8,23 @@ import {
 
 import { StylesPlaceholder } from "@mantine/remix";
 import { SpotlightAction, SpotlightProvider } from "@mantine/spotlight";
+import { category, users } from "@prisma/client";
 import type { LoaderArgs } from "@remix-run/node";
-import { json, MetaFunction } from "@remix-run/node";
-import { typedjson, useTypedLoaderData } from "remix-typedjson";
+import { MetaFunction } from "@remix-run/node";
 import {
   Links,
   LiveReload,
   Meta,
   Outlet,
   Scripts,
-  ScrollRestoration,
-  useLoaderData,
+  ScrollRestoration
 } from "@remix-run/react";
 import { useState } from "react";
-import { SpotlightProductAction } from "./components/common/spotlight-product-action";
+import { typedjson, useTypedLoaderData } from "remix-typedjson";
+import { SpotlightProductAction } from "./components/header/spotlight-product-action";
 import { HeaderAction } from "./components/header";
-import { getUser } from "./utils/session.server";
-import _ from "lodash";
-import { category, users } from "@prisma/client";
 import { getMainCategory } from "./servers/category/category.service";
+import { getUser } from "./utils/session.server";
 
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
@@ -43,11 +41,6 @@ createEmotionCache({ key: "mantine" });
 
 type LoaderData = {
   actions: SpotlightAction[];
-  links: {
-    link: string;
-    label: string;
-    links?: { link: string; label: string }[];
-  }[];
   user?: users;
   category?: category;
 };
@@ -84,65 +77,11 @@ export async function loader({ request }: LoaderArgs) {
       onTrigger: () => {},
     },
   ];
-  const links = [
-    {
-      link: "/features",
-      label: "Features",
-    },
-    {
-      link: "#1",
-      label: "Learn",
-      links: [
-        {
-          link: "/docs",
-          label: "Documentation",
-        },
-        {
-          link: "/resources",
-          label: "Resources",
-        },
-        {
-          link: "/community",
-          label: "Community",
-        },
-        {
-          link: "/blog",
-          label: "Blog",
-        },
-      ],
-    },
-    {
-      link: "/about",
-      label: "About",
-    },
-    {
-      link: "/pricing",
-      label: "Pricing",
-    },
-    {
-      link: "#2",
-      label: "Support",
-      links: [
-        {
-          link: "/faq",
-          label: "FAQ",
-        },
-        {
-          link: "/demo",
-          label: "Book a demo",
-        },
-        {
-          link: "/forums",
-          label: "Forums",
-        },
-      ],
-    },
-  ];
   const user = (await getUser(request)) as users;
 
   const category = (await getMainCategory()) as category;
 
-  let data: LoaderData = { actions, links, user, category };
+  let data: LoaderData = { actions, user, category };
   return typedjson(data);
 }
 
@@ -153,7 +92,6 @@ export default function App() {
     setColorScheme(
       value || (colorScheme === Theme.DARK ? Theme.LIGHT : Theme.DARK)
     );
-  console.log("category", data.category);
   return (
     <ColorSchemeProvider
       colorScheme={colorScheme}
@@ -188,7 +126,7 @@ export default function App() {
                         : theme.colors.gray[0],
                   },
                 })}
-                header={<HeaderAction links={data.links} user={data.user} />}
+                header={<HeaderAction category={data.category} user={data.user} />}
               >
                 <Outlet />
               </AppShell>

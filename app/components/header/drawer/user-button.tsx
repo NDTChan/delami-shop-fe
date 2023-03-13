@@ -1,12 +1,11 @@
 import {
+    Avatar,
+    Group,
+    Text,
     UnstyledButton,
     UnstyledButtonProps,
-    Group,
-    Avatar,
-    Text,
     createStyles,
 } from '@mantine/core';
-import { IconChevronRight } from '@tabler/icons';
 
 const useStyles = createStyles((theme) => ({
     user: {
@@ -28,25 +27,23 @@ interface UserButtonProps extends UnstyledButtonProps {
     icon?: React.ReactNode;
 }
 
-export function UserButton({ image, name, email, icon, ...others }: UserButtonProps) {
+export function UserButton({ image, name, email, ...others }: UserButtonProps) {
     const { classes } = useStyles();
 
     return (
         <UnstyledButton className={classes.user} {...others}>
             <Group>
-                <Avatar src={image} radius="xl" />
+                <Avatar size="lg" src={image} radius="xl" />
 
                 <div style={{ flex: 1 }}>
-                    <Text size="sm" weight={500}>
+                    <Text size="md" weight={500}>
                         {name}
                     </Text>
 
-                    <Text color="dimmed" size="xs">
+                    <Text color="dimmed" size="sm">
                         {email}
                     </Text>
                 </div>
-
-                {icon || <IconChevronRight size={14} stroke={1.5} />}
             </Group>
         </UnstyledButton>
     );

@@ -18,9 +18,7 @@ import {
   IconPhone,
 } from "@tabler/icons";
 import _ from "lodash";
-import {
-  REGEX_EMAIL
-} from "~/constants/regex.const";
+import { REGEX_EMAIL } from "~/constants/regex.const";
 import { getUserByEmail, getUserByMobile } from "~/servers/auth/auth.data";
 import { register } from "~/servers/auth/auth.service";
 import { badRequest } from "~/utils/request.server";
@@ -91,7 +89,7 @@ export default function Login() {
         if (_.isEmpty(value)) {
           return "Bạn phải nhập số điện thoại";
         }
-        
+
         if (!/(84|0[3|5|7|8|9])+([0-9]{8})\b/g.test(value)) {
           return "Không đúng định dạng số điện thoại";
         }
@@ -133,6 +131,7 @@ export default function Login() {
           )}
         >
           <TextInput
+            autoFocus={true}
             label="Email của bạn"
             placeholder="Email"
             {...form.getInputProps("email")}
