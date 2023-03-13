@@ -10,15 +10,15 @@ import {
   PasswordInput,
   Text,
   TextInput,
-  Title,
+  Title
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { ActionArgs, json, LoaderArgs } from "@remix-run/node";
+import { ActionArgs } from "@remix-run/node";
 import {
   Link,
   useActionData,
   useNavigation,
-  useSubmit,
+  useSubmit
 } from "@remix-run/react";
 import { IconAlertTriangle } from "@tabler/icons";
 import _ from "lodash";

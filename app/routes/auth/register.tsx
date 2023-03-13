@@ -22,6 +22,7 @@ import { REGEX_EMAIL } from "~/constants/regex.const";
 import { getUserByEmail, getUserByMobile } from "~/servers/auth/auth.data";
 import { register } from "~/servers/auth/auth.service";
 import { badRequest } from "~/utils/request.server";
+import { createUserSession } from "~/utils/session.server";
 
 const useStyles = createStyles((theme) => ({
   invalid: {
@@ -63,9 +64,9 @@ export const action = async ({ request }: ActionArgs) => {
     });
   }
 
-  await register(fields);
+  const newUser = await register(fields);
 
-  return redirect("/");
+  return createUserSession(_.toString(newUser.id), "/");;
 };
 
 export default function Login() {
