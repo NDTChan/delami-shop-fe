@@ -1,11 +1,6 @@
 import {
-  ActionIcon,
-  ColorScheme,
-  Drawer,
-  createStyles,
-  getStylesRef,
-  rem,
-  useMantineColorScheme,
+  ColorScheme, createStyles, Drawer, getStylesRef,
+  rem
 } from "@mantine/core";
 import { users } from "@prisma/client";
 import {
@@ -16,16 +11,11 @@ import {
   IconLock,
   IconLogout,
   IconNotes,
-  IconPresentationAnalytics,
-  IconSelector,
-  IconSwitchHorizontal,
-  IconUser,
+  IconPresentationAnalytics, IconSwitchHorizontal
 } from "@tabler/icons";
+import _ from "lodash";
 import { LinksGroup } from "~/components/header/drawer/link-group";
 import { UserButton } from "./user-button";
-import { Link } from "@remix-run/react";
-import _ from "lodash";
-import { DelamiLogo } from "~/components/logo";
 
 const useStyles = createStyles((theme) => ({
   section: {
