@@ -1,6 +1,9 @@
 import {
-  ColorScheme, createStyles, Drawer, getStylesRef,
-  rem
+  ColorScheme,
+  createStyles,
+  Drawer,
+  getStylesRef,
+  rem,
 } from "@mantine/core";
 import { users } from "@prisma/client";
 import {
@@ -11,12 +14,14 @@ import {
   IconLock,
   IconLogout,
   IconNotes,
-  IconPresentationAnalytics, IconSwitchHorizontal
+  IconPresentationAnalytics,
+  IconSwitchHorizontal,
 } from "@tabler/icons-react";
 import _ from "lodash";
 import { LinksGroup } from "~/components/header/drawer/link-group";
 import { UserButton } from "./user-button";
 import { CategoryMain } from "~/interfaces/category";
+import { Link, useSubmit } from "@remix-run/react";
 
 const useStyles = createStyles((theme) => ({
   section: {
@@ -127,9 +132,10 @@ export function DrawerComponent({
   user: users;
   opened: boolean;
   toggle: () => void;
-  category: CategoryMain
+  category: CategoryMain;
 }) {
   const { classes, theme } = useStyles();
+  const submit = useSubmit();
   const links = category.children.map((item) => (
     <LinksGroup {...item} key={item.title} />
   ));
@@ -171,7 +177,7 @@ export function DrawerComponent({
 
           {!_.isNull(user) ? (
             <div className={classes.footer}>
-              <a
+              {/* <a
                 href="#"
                 className={classes.link}
                 onClick={(event) => event.preventDefault()}
@@ -181,12 +187,18 @@ export function DrawerComponent({
                   stroke={1.5}
                 />
                 <span>Change account</span>
-              </a>
+              </a> */}
 
               <a
-                href="#"
                 className={classes.link}
-                onClick={(event) => event.preventDefault()}
+                onClick={() => {
+                  submit(null, {
+                    method: "post",
+                    action: "/action/logout",
+                    replace: true,
+                  });
+                  toggle();
+                }}
               >
                 <IconLogout className={classes.linkIcon} stroke={1.5} />
                 <span>Logout</span>
