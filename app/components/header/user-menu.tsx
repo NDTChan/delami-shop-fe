@@ -19,7 +19,7 @@ import {
   IconStar,
   IconSwitchHorizontal,
   IconTrash,
-} from "@tabler/icons";
+} from "@tabler/icons-react";
 import { useState } from "react";
 const useStyles = createStyles((theme) => ({
   user: {

@@ -25,6 +25,7 @@ import { SpotlightProductAction } from "./components/header/spotlight-product-ac
 import { HeaderAction } from "./components/header";
 import { getMainCategory } from "./servers/category/category.service";
 import { getUser } from "./utils/session.server";
+import { CategoryMain } from "./interfaces/category";
 
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
@@ -42,7 +43,7 @@ createEmotionCache({ key: "mantine" });
 type LoaderData = {
   actions: SpotlightAction[];
   user: users;
-  category?: category;
+  category: CategoryMain;
 };
 export async function loader({ request }: LoaderArgs) {
   const actions = [
@@ -78,7 +79,7 @@ export async function loader({ request }: LoaderArgs) {
     },
   ];
   const user = (await getUser(request)) as users;
-  const category = (await getMainCategory()) as category;
+  const category = (await getMainCategory()) as CategoryMain;
 
   let data: LoaderData = { actions, user, category };
   return typedjson(data);

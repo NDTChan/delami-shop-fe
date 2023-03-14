@@ -8,11 +8,11 @@ import {
   createStyles,
   rem,
 } from "@mantine/core";
-import {
-  IconChevronLeft,
-  IconChevronRight
-} from "@tabler/icons-react";
+import * as icons from "@tabler/icons-react";
+import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
+import _ from "lodash";
 import { useState } from "react";
+import { CategoryMain } from "~/interfaces/category";
 
 const useStyles = createStyles((theme) => ({
   control: {
@@ -62,34 +62,25 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-interface LinksGroupProps {
-  icon: React.FC<any>;
-  label: string;
-  initiallyOpened?: boolean;
-  links?: { label: string; link: string }[];
-}
-
-export function LinksGroup({
-  icon: Icon,
-  label,
-  initiallyOpened,
-  links,
-}: LinksGroupProps) {
+export function LinksGroup({ icon, title, children, slug }: CategoryMain) {
   const { classes, theme } = useStyles();
-  const hasLinks = Array.isArray(links);
-  const [opened, setOpened] = useState(initiallyOpened || false);
+  const hasLinks = _.isArray(children) && !_.isEmpty(children);
+  const [opened, setOpened] = useState(false);
   const ChevronIcon = theme.dir === "ltr" ? IconChevronRight : IconChevronLeft;
-  const items = (hasLinks ? links : []).map((link) => (
+  const items = (hasLinks ? children : []).map((link) => (
     <Text<"a">
       component="a"
       className={classes.link}
-      href={link.link}
-      key={link.label}
+      href={link.slug}
+      key={link.title}
       onClick={(event) => event.preventDefault()}
     >
-      {link.label}
+      {link.title}
     </Text>
   ));
+
+  // @ts-ignore
+  const Icon: JSX.Element = icons[`Icon${icon}`];
 
   return (
     <>
@@ -100,9 +91,10 @@ export function LinksGroup({
         <Group position="apart" spacing={0}>
           <Box sx={{ display: "flex", alignItems: "center" }}>
             <ThemeIcon variant="light" size={30}>
+              {/* @ts-ignore */}
               <Icon size="1.1rem" />
             </ThemeIcon>
-            <Box ml="md">{label}</Box>
+            <Box ml="md">{title}</Box>
           </Box>
           {hasLinks && (
             <ChevronIcon

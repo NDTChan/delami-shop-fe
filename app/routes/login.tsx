@@ -20,7 +20,7 @@ import {
   useNavigation,
   useSubmit
 } from "@remix-run/react";
-import { IconAlertTriangle } from "@tabler/icons";
+import { IconAlertTriangle } from "@tabler/icons-react";
 import _ from "lodash";
 import { REGEX_COMBINE_EMAIL_VS_VN_PHONE } from "~/constants/regex.const";
 import { login } from "~/servers/auth/auth.service";

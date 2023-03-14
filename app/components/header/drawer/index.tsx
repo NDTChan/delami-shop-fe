@@ -12,10 +12,11 @@ import {
   IconLogout,
   IconNotes,
   IconPresentationAnalytics, IconSwitchHorizontal
-} from "@tabler/icons";
+} from "@tabler/icons-react";
 import _ from "lodash";
 import { LinksGroup } from "~/components/header/drawer/link-group";
 import { UserButton } from "./user-button";
+import { CategoryMain } from "~/interfaces/category";
 
 const useStyles = createStyles((theme) => ({
   section: {
@@ -121,16 +122,16 @@ export function DrawerComponent({
   user,
   opened,
   toggle,
-  colorScheme,
+  category,
 }: {
   user: users;
   opened: boolean;
   toggle: () => void;
-  colorScheme: ColorScheme;
+  category: CategoryMain
 }) {
   const { classes, theme } = useStyles();
-  const links = mockdata.map((item) => (
-    <LinksGroup {...item} key={item.label} />
+  const links = category.children.map((item) => (
+    <LinksGroup {...item} key={item.title} />
   ));
   return (
     <Drawer.Root

@@ -9,14 +9,14 @@ import {
   Title,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { ActionArgs, redirect } from "@remix-run/node";
+import { ActionArgs } from "@remix-run/node";
 import { useActionData, useNavigation, useSubmit } from "@remix-run/react";
 import {
   IconAlertTriangle,
   IconAt,
   IconPassword,
   IconPhone,
-} from "@tabler/icons";
+} from "@tabler/icons-react";
 import _ from "lodash";
 import { REGEX_EMAIL } from "~/constants/regex.const";
 import { getUserByEmail, getUserByMobile } from "~/servers/auth/auth.data";

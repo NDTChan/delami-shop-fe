@@ -23,12 +23,13 @@ import {
   IconShoppingCart,
   IconSun,
   IconUser,
-} from "@tabler/icons";
+} from "@tabler/icons-react";
 import _ from "lodash";
 import { Theme } from "~/root";
 import { DelamiLogo } from "../logo";
 import { DrawerComponent } from "./drawer";
 import { UserMenu } from "./user-menu";
+import { CategoryMain } from "~/interfaces/category";
 
 const HEADER_HEIGHT = 60;
 
@@ -113,7 +114,7 @@ const useStyles = createStyles((theme) => ({
 
 type LoaderData = {
   user: users;
-  category: any;
+  category: CategoryMain;
 };
 
 export function HeaderAction({ category, user }: LoaderData) {
@@ -177,10 +178,10 @@ export function HeaderAction({ category, user }: LoaderData) {
             size="sm"
           />
           <DrawerComponent
+            category={category}
             opened={opened}
             toggle={toggle}
             user={user}
-            colorScheme={colorScheme}
           />
 
           <DelamiLogo color={colorScheme} />
