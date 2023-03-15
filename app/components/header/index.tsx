@@ -32,7 +32,7 @@ import { UserMenu } from "./user-menu";
 import { CategoryMain } from "~/interfaces/category";
 
 
-const HEADER_HEIGHT = 70;
+const HEADER_HEIGHT = 60;
 const useStyles = createStyles((theme) => ({
   inner: {
     height: HEADER_HEIGHT,

@@ -9,7 +9,7 @@ import {
   rem,
 } from "@mantine/core";
 import * as icons from "@tabler/icons-react";
-import { IconChevronLeft, IconChevronRight} from "@tabler/icons-react";
+import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
 import _ from "lodash";
 import { useState } from "react";
 import { CategoryMain } from "~/interfaces/category";
@@ -81,7 +81,7 @@ export function LinksGroup({ icon, title, children, slug }: CategoryMain) {
 
   // @ts-ignore
   const Icon: JSX.Element = icons[`Icon${icon}`];
-  
+
   return (
     <>
       <UnstyledButton
@@ -91,8 +91,7 @@ export function LinksGroup({ icon, title, children, slug }: CategoryMain) {
         <Group position="apart" spacing={0}>
           <Box sx={{ display: "flex", alignItems: "center" }}>
             <ThemeIcon variant="light" size={30}>
-              {/* @ts-ignore */}
-              <Icon size="1.1rem" />
+              {!_.isNull(icon) ? <Icon size="1.1rem" /> : null}
             </ThemeIcon>
             <Box ml="md">{title}</Box>
           </Box>
