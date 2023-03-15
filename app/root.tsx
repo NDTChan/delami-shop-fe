@@ -1,14 +1,19 @@
 import {
+  Affix,
   AppShell,
+  Button,
   ColorScheme,
   ColorSchemeProvider,
   createEmotionCache,
   MantineProvider,
+  rem,
+  Transition,
 } from "@mantine/core";
 
+import { useWindowScroll } from "@mantine/hooks";
 import { StylesPlaceholder } from "@mantine/remix";
 import { SpotlightAction, SpotlightProvider } from "@mantine/spotlight";
-import { category, users } from "@prisma/client";
+import { users } from "@prisma/client";
 import type { LoaderArgs } from "@remix-run/node";
 import { MetaFunction } from "@remix-run/node";
 import {
@@ -21,11 +26,12 @@ import {
 } from "@remix-run/react";
 import { useState } from "react";
 import { typedjson, useTypedLoaderData } from "remix-typedjson";
-import { SpotlightProductAction } from "./components/header/spotlight-product-action";
 import { HeaderAction } from "./components/header";
+import { SpotlightProductAction } from "./components/header/spotlight-product-action";
+import { CategoryMain } from "./interfaces/category";
 import { getMainCategory } from "./servers/category/category.service";
 import { getUser } from "./utils/session.server";
-import { CategoryMain } from "./interfaces/category";
+import { IconArrowUp } from "@tabler/icons-react";
 
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
@@ -87,6 +93,7 @@ export async function loader({ request }: LoaderArgs) {
 
 export default function App() {
   const data = useTypedLoaderData<typeof loader>() as LoaderData;
+  const [scroll, scrollTo] = useWindowScroll();
   const [colorScheme, setColorScheme] = useState<ColorScheme>(Theme.LIGHT);
   const toggleColorScheme = (value?: ColorScheme) =>
     setColorScheme(
@@ -131,6 +138,19 @@ export default function App() {
                 }
               >
                 <Outlet />
+                <Affix position={{ bottom: rem(20), right: rem(20) }}>
+                  <Transition transition="slide-up" mounted={scroll.y > 0}>
+                    {(transitionStyles) => (
+                      <Button
+                        leftIcon={<IconArrowUp size="1rem" />}
+                        style={transitionStyles}
+                        onClick={() => scrollTo({ y: 0 })}
+                      >
+                        Scroll to top
+                      </Button>
+                    )}
+                  </Transition>
+                </Affix>
               </AppShell>
               <ScrollRestoration />
               <Scripts />

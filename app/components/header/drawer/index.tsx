@@ -1,27 +1,18 @@
 import {
-  ColorScheme,
   createStyles,
   Drawer,
   getStylesRef,
-  rem,
+  rem
 } from "@mantine/core";
 import { users } from "@prisma/client";
+import { useSubmit } from "@remix-run/react";
 import {
-  IconAdjustments,
-  IconCalendarStats,
-  IconFileAnalytics,
-  IconGauge,
-  IconLock,
-  IconLogout,
-  IconNotes,
-  IconPresentationAnalytics,
-  IconSwitchHorizontal,
+  IconLogout
 } from "@tabler/icons-react";
 import _ from "lodash";
 import { LinksGroup } from "~/components/header/drawer/link-group";
-import { UserButton } from "./user-button";
 import { CategoryMain } from "~/interfaces/category";
-import { Link, useSubmit } from "@remix-run/react";
+import { UserButton } from "./user-button";
 
 const useStyles = createStyles((theme) => ({
   section: {
@@ -86,42 +77,6 @@ const useStyles = createStyles((theme) => ({
     marginRight: theme.spacing.sm,
   },
 }));
-
-const mockdata = [
-  { label: "Dashboard", icon: IconGauge },
-  {
-    label: "Market news",
-    icon: IconNotes,
-    initiallyOpened: true,
-    links: [
-      { label: "Overview", link: "/" },
-      { label: "Forecasts", link: "/" },
-      { label: "Outlook", link: "/" },
-      { label: "Real time", link: "/" },
-    ],
-  },
-  {
-    label: "Releases",
-    icon: IconCalendarStats,
-    links: [
-      { label: "Upcoming releases", link: "/" },
-      { label: "Previous releases", link: "/" },
-      { label: "Releases schedule", link: "/" },
-    ],
-  },
-  { label: "Analytics", icon: IconPresentationAnalytics },
-  { label: "Contracts", icon: IconFileAnalytics },
-  { label: "Settings", icon: IconAdjustments },
-  {
-    label: "Security",
-    icon: IconLock,
-    links: [
-      { label: "Enable 2FA", link: "/" },
-      { label: "Change password", link: "/" },
-      { label: "Recovery codes", link: "/" },
-    ],
-  },
-];
 
 export function DrawerComponent({
   user,

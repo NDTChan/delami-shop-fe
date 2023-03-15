@@ -70,7 +70,7 @@ export function UserMenu({ user }: LoaderData) {
               src={user.image}
               alt={user.fullName ?? ''}
               radius="xl"
-              size={40}
+              size={35}
             />
             <MediaQuery smallerThan={"lg"} styles={{ display: "none" }}>
               <Text weight={500} size="sm" sx={{ lineHeight: 1 }} mr={3}>
