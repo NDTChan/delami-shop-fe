@@ -124,15 +124,14 @@ export default function App() {
             </head>
             <body>
               <AppShell
-                layout="alt"
-                styles={(theme) => ({
-                  main: {
-                    background:
-                      colorScheme === "dark"
-                        ? theme.colors.dark[8]
-                        : theme.colors.gray[0],
-                  },
-                })}
+                // styles={(theme) => ({
+                //   main: {
+                //     background:
+                //       colorScheme === "dark"
+                //         ? theme.colors.dark[8]
+                //         : theme.colors.gray[0],
+                //   },
+                // })}
                 header={
                   <HeaderAction category={data.category} user={data.user} />
                 }
