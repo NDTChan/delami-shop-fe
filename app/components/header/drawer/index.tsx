@@ -1,20 +1,12 @@
-import {
-  Button,
-  Code,
-  createStyles,
-  Drawer,
-  getStylesRef,
-  Group,
-  rem,
-} from "@mantine/core";
+import { createStyles, Drawer, getStylesRef, rem } from "@mantine/core";
 import { users } from "@prisma/client";
 import { Link, useSubmit } from "@remix-run/react";
-import { IconLogout, IconRegistered, IconLogin } from "@tabler/icons-react";
+import { IconLogin, IconLogout, IconRegistered } from "@tabler/icons-react";
 import _ from "lodash";
 import { LinksGroup } from "~/components/header/drawer/link-group";
+import { DelamiLogo } from "~/components/logo";
 import { CategoryMain } from "~/interfaces/category";
 import { UserButton } from "./user-button";
-import { DelamiLogo } from "~/components/logo";
 
 const useStyles = createStyles((theme) => ({
   section: {
@@ -102,7 +94,7 @@ export function DrawerComponent({
       onClose={toggle}
       title="Menu"
       padding="xl"
-      size={380}
+      size={350}
       position="left"
     >
       <Drawer.Overlay
@@ -137,18 +129,6 @@ export function DrawerComponent({
           </div>
           {!_.isNull(user) ? (
             <div className={classes.footer}>
-              {/* <a
-                href="#"
-                className={classes.link}
-                onClick={(event) => event.preventDefault()}
-              >
-                <IconSwitchHorizontal
-                  className={classes.linkIcon}
-                  stroke={1.5}
-                />
-                <span>Change account</span>
-              </a> */}
-
               <a
                 className={classes.link}
                 onClick={() => {
@@ -161,14 +141,14 @@ export function DrawerComponent({
                 }}
               >
                 <IconLogout className={classes.linkIcon} stroke={1.5} />
-                <span>Logout</span>
+                <span>Đăng xuất</span>
               </a>
             </div>
           ) : (
             <div className={classes.footer}>
               <Link className={classes.link} to={"/login"} onClick={toggle}>
                 <IconLogin className={classes.linkIcon} stroke={1.5} />
-                <span>Login</span>
+                <span>Đăng nhập</span>
               </Link>
               <Link
                 className={classes.link}
@@ -176,7 +156,7 @@ export function DrawerComponent({
                 onClick={toggle}
               >
                 <IconRegistered className={classes.linkIcon} stroke={1.5} />
-                <span>Sign Up</span>
+                <span>Đăng ký</span>
               </Link>
             </div>
           )}
