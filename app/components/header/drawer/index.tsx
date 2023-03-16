@@ -1,5 +1,6 @@
 import {
   Button,
+  Code,
   createStyles,
   Drawer,
   getStylesRef,
