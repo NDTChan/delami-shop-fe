@@ -1,18 +1,19 @@
 import {
+  Button,
   createStyles,
   Drawer,
   getStylesRef,
-  rem
+  Group,
+  rem,
 } from "@mantine/core";
 import { users } from "@prisma/client";
-import { useSubmit } from "@remix-run/react";
-import {
-  IconLogout
-} from "@tabler/icons-react";
+import { Link, useSubmit } from "@remix-run/react";
+import { IconLogout, IconRegistered, IconLogin } from "@tabler/icons-react";
 import _ from "lodash";
 import { LinksGroup } from "~/components/header/drawer/link-group";
 import { CategoryMain } from "~/interfaces/category";
 import { UserButton } from "./user-button";
+import { DelamiLogo } from "~/components/logo";
 
 const useStyles = createStyles((theme) => ({
   section: {
@@ -121,7 +122,11 @@ export function DrawerComponent({
                 name={user.fullName ?? ""}
                 email={user.email ?? ""}
               />
-            ) : null}
+            ) : (
+              <Link to={"/"} onClick={toggle}>
+                <DelamiLogo color={theme.colorScheme} />
+              </Link>
+            )}
           </Drawer.Title>
           <Drawer.CloseButton />
         </Drawer.Header>
@@ -129,7 +134,6 @@ export function DrawerComponent({
           <div className={classes.links}>
             <div className={classes.linksInner}>{links}</div>
           </div>
-
           {!_.isNull(user) ? (
             <div className={classes.footer}>
               {/* <a
@@ -159,7 +163,22 @@ export function DrawerComponent({
                 <span>Logout</span>
               </a>
             </div>
-          ) : null}
+          ) : (
+            <div className={classes.footer}>
+              <Link className={classes.link} to={"/login"} onClick={toggle}>
+                <IconLogin className={classes.linkIcon} stroke={1.5} />
+                <span>Login</span>
+              </Link>
+              <Link
+                className={classes.link}
+                to={"/auth/register"}
+                onClick={toggle}
+              >
+                <IconRegistered className={classes.linkIcon} stroke={1.5} />
+                <span>Sign Up</span>
+              </Link>
+            </div>
+          )}
         </Drawer.Body>
       </Drawer.Content>
     </Drawer.Root>

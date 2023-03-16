@@ -31,7 +31,6 @@ import { DrawerComponent } from "./drawer";
 import { UserMenu } from "./user-menu";
 import { CategoryMain } from "~/interfaces/category";
 
-
 const HEADER_HEIGHT = 60;
 const useStyles = createStyles((theme) => ({
   inner: {
@@ -183,8 +182,9 @@ export function HeaderAction({ category, user }: LoaderData) {
             toggle={toggle}
             user={user}
           />
-
-          <DelamiLogo color={colorScheme} />
+          <Link to={"/"}>
+            <DelamiLogo color={colorScheme} />
+          </Link>
 
           <MediaQuery smallerThan={"md"} styles={{ display: "none" }}>
             <Switch
@@ -212,15 +212,17 @@ export function HeaderAction({ category, user }: LoaderData) {
           </ActionIcon>
 
           {_.isNull(user) ? (
-            <ActionIcon
-              component={Link}
-              color={"dark"}
-              size="lg"
-              variant="transparent"
-              to={"/login"}
-            >
-              <IconUser size={27} />
-            </ActionIcon>
+            <MediaQuery smallerThan={"md"} styles={{ display: "none" }}>
+              <ActionIcon
+                component={Link}
+                color={"dark"}
+                size="lg"
+                variant="transparent"
+                to={"/login"}
+              >
+                <IconUser size={27} />
+              </ActionIcon>
+            </MediaQuery>
           ) : (
             <UserMenu user={user} />
           )}

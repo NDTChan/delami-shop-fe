@@ -91,7 +91,10 @@ export function LinksGroup({ icon, title, children, slug }: CategoryMain) {
         <Group position="apart" spacing={0}>
           <Box sx={{ display: "flex", alignItems: "center" }}>
             <ThemeIcon variant="light" size={30}>
-              {!_.isNull(icon) ? <Icon size="1.1rem" /> : null}
+              {!_.isNull(icon) ? (
+                // @ts-ignore
+                <Icon size="1.1rem" />
+              ) : null}
             </ThemeIcon>
             <Box ml="md">{title}</Box>
           </Box>
